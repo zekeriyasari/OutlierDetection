@@ -16,17 +16,21 @@ num_inliers = num_samples - num_outliers
 
 # Construct the data set
 offset = 2
-x_inliers_1 = 0.3 * np.random.randn(num_inliers // 2, 2) - offset
-x_inliers_2 = 0.3 * np.random.randn(num_inliers // 2, 2) + offset
-x_inliers = np.r_[x_inliers_1, x_inliers_2]
-x_outliers = np.random.uniform(low=-5, high=5, size=(num_outliers, 2))
-x = np.r_[x_inliers, x_outliers]
+data_inliers_1 = 0.3 * np.random.randn(num_inliers // 2, 2) - offset
+data_inliers_2 = 0.3 * np.random.randn(num_inliers // 2, 2) + offset
+data_inliers = np.r_[data_inliers_1, data_inliers_2]
+data_outliers = np.random.uniform(low=-5, high=5, size=(num_outliers, 2))
+data = np.r_[data_inliers, data_outliers]
 
 # Construct the outlier detector
 clf = LocalOutlierFactor(n_neighbors=35, contamination=contamination)
-y = clf.fit_predict(x)
-scores = clf.negative_outlier_factor_
-threshold = stats.scoreatpercentile(scores, 100 * contamination)
+
+# Perform outlier detection# clf = IsolationForest()
+predicted_data = clf.fit_predict(data)
+inlier_predicted_data = data[predicted_data == 1]
+outlier_predicted_data = data[predicted_data == -1]
+num_inliers_predicted = inlier_predicted_data.shape[0]
+num_outliers_predicted = outlier_predicted_data.shape[0]
 
 # Calculate outlier scores
 xr = np.linspace(-5, 5, 500)
@@ -34,14 +38,17 @@ yr = np.linspace(-5, 5, 500)
 xx, yy = np.meshgrid(xr, yr)
 zz = clf._decision_function(np.c_[xx.ravel(), yy.ravel()])
 zz = zz.reshape(xx.shape)
-
-# # Plot decision function values
+scores = clf.negative_outlier_factor_
+threshold = stats.scoreatpercentile(scores, 100 * contamination)
 plt.contourf(xx, yy, zz, levels=np.linspace(zz.min(), threshold, 7), cmap=plt.cm.Blues_r)  # Outlier
 plt.contour(xx, yy, zz, levels=np.array([threshold]), linewidths=2, colors="red")  # The frontier
 plt.contourf(xx, yy, zz, levels=np.linspace(threshold, zz.max(), 7), colors="orange")  # Inlier
 
-# Plot the set
-plt.scatter(x_inliers[:, 0], x_inliers[:, 1], c="white", s=20, edgecolors="black", label="Inliers")
-plt.scatter(x_outliers[:, 0], x_outliers[:, 1], c="black", s=20, edgecolors="black", label="Outliers")
+# Plot the sets
+plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white", s=10, edgecolors="black",
+            label="Inliers")
+plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
+            label="Outliers")
+plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
 plt.legend()
 plt.show()
