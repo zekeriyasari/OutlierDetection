@@ -34,8 +34,8 @@ num_inliers_predicted = inlier_predicted_data.shape[0]
 num_outliers_predicted = outlier_predicted_data.shape[0]
 
 # Plot decision function values
-xr = np.linspace(-5, 5, 500)
-yr = np.linspace(-5, 5, 500)
+xr = np.linspace(-6, 6, 600)
+yr = np.linspace(-6, 6, 600)
 xx, yy = np.meshgrid(xr, yr)
 zz = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
 zz = zz.reshape(xx.shape)

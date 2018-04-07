@@ -1,26 +1,15 @@
-# EllipticEnvelope outlier detection
+# One-Class SVM for real dataset
 
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.datasets import load_boston
 from sklearn.covariance import EllipticEnvelope
 from scipy import stats
 
-# Set rng seed
-np.random.seed(42)
-
-# Example settings
-num_samples = 200
-contamination = 0.25
-num_outliers = int(num_samples * contamination)
-num_inliers = num_samples - num_outliers
-
-# Construct the data set
-offset = 2
-data_inliers_1 = 0.3 * np.random.randn(num_inliers // 2, 2) - offset
-data_inliers_2 = 0.3 * np.random.randn(num_inliers // 2, 2) + offset
-data_inliers = np.r_[data_inliers_1, data_inliers_2]
-data_outliers = np.random.uniform(low=-5, high=5, size=(num_outliers, 2))
-data = np.r_[data_inliers, data_outliers]
+# Get the data
+dataset = load_boston()
+data = dataset["data"][:, [8, 10]]  # Two cluster data
+contamination = 0.261
 
 # Fit the model
 clf = EllipticEnvelope(contamination=contamination)
@@ -33,9 +22,9 @@ outlier_predicted_data = data[predicted_data == -1]
 num_inliers_predicted = inlier_predicted_data.shape[0]
 num_outliers_predicted = outlier_predicted_data.shape[0]
 
-# # Plot decision function values
-xr = np.linspace(-5, 5, 500)
-yr = np.linspace(-5, 5, 500)
+# Plot decision function values
+xr = np.linspace(-5, 30, 500)
+yr = np.linspace(5, 30, 500)
 xx, yy = np.meshgrid(xr, yr)
 zz = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
 zz = zz.reshape(xx.shape)
