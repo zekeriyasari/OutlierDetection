@@ -39,7 +39,7 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Inliers = {} Outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
-plt.xlabel("Elliptic Envelope(Empirical Covariance Estimate). contamination=0.261")
+plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("Elliptic Envelope(Empirical Covariance Estimate). contamination={}".format(contamination))
 plt.legend()
 plt.show()

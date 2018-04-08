@@ -9,9 +9,10 @@ dataset = loadmat("../Ionosphere/ionosphere.mat")
 data = dataset["X"][:, [1, 5]]
 contamination = 0.36
 num_samples = np.shape(data)[0]
+num_neighbors = 35
 
 # Construct the outlier detector
-clf = LocalOutlierFactor(n_neighbors=35, contamination=contamination)
+clf = LocalOutlierFactor(n_neighbors=num_neighbors, contamination=contamination)
 
 # Perform outlier detection# clf = IsolationForest()
 predicted_data = clf.fit_predict(data)
@@ -37,6 +38,7 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("Local Density Factor. n_neighbors={}, contamination={}".format(num_neighbors, contamination))
 plt.legend()
 plt.show()

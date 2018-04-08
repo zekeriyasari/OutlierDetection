@@ -13,9 +13,10 @@ num_samples = 200
 contamination = 0.25
 num_outliers = int(num_samples * contamination)
 num_inliers = num_samples - num_outliers
+num_neighbors = 35
 
 # Construct the data set
-offset = 1
+offset = 2
 data_inliers_1 = 0.3 * np.random.randn(num_inliers // 2, 2) - offset
 data_inliers_2 = 0.3 * np.random.randn(num_inliers // 2, 2) + offset
 data_inliers = np.r_[data_inliers_1, data_inliers_2]
@@ -23,7 +24,7 @@ data_outliers = np.random.uniform(low=-5, high=5, size=(num_outliers, 2))
 data = np.r_[data_inliers, data_outliers]
 
 # Construct the outlier detector
-clf = LocalOutlierFactor(n_neighbors=35, contamination=contamination)
+clf = LocalOutlierFactor(n_neighbors=num_neighbors, contamination=contamination)
 
 # Perform outlier detection# clf = IsolationForest()
 predicted_data = clf.fit_predict(data)
@@ -50,6 +51,6 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
 plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
-plt.xlabel("Local Density Factor. n_neighbors=35, contamination=0.25")
+plt.xlabel("Local Density Factor. n_neighbors={}, contamination={}".format(num_neighbors, contamination))
 plt.legend()
 plt.show()

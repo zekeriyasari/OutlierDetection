@@ -10,9 +10,10 @@ from scipy import stats
 dataset = load_boston()
 data = dataset["data"][:, [8, 10]]  # Two cluster data
 contamination = 0.261
+gamma = 0.1
 
 # Fit the model
-clf = OneClassSVM(nu=contamination, gamma=0.05)
+clf = OneClassSVM(nu=contamination, gamma=gamma)
 clf.fit(data)
 
 # Perform outlier detection
@@ -39,7 +40,8 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("One Class SVM. kernel='rbf', gamma={}, nu={}".format(gamma, contamination))
 plt.legend()
 plt.show()
 

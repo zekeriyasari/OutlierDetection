@@ -8,9 +8,10 @@ dataset = loadmat("../Ionosphere/ionosphere.mat")
 data = dataset["X"][:, [1, 5]]
 contamination = 0.36
 num_samples = np.shape(data)[0]
+gamma = 0.1
 
 # Fit the model
-clf = OneClassSVM(nu=contamination, gamma=0.1)
+clf = OneClassSVM(nu=contamination, gamma=gamma)
 clf.fit(data)
 
 # Perform outlier detection
@@ -37,6 +38,7 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("One Class SVM. kernel='rbf', gamma={}, nu={}".format(gamma, contamination))
 plt.legend()
 plt.show()

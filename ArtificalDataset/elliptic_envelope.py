@@ -15,7 +15,7 @@ num_outliers = int(num_samples * contamination)
 num_inliers = num_samples - num_outliers
 
 # Construct the data set
-offset = 1
+offset = 2
 data_inliers_1 = 0.3 * np.random.randn(num_inliers // 2, 2) - offset
 data_inliers_2 = 0.3 * np.random.randn(num_inliers // 2, 2) + offset
 data_inliers = np.r_[data_inliers_1, data_inliers_2]
@@ -51,6 +51,6 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
 plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
-plt.xlabel("Elliptic Envelope. contamination=0.25")
+plt.xlabel("Elliptic Envelope. contamination={}".format(contamination))
 plt.legend()
 plt.show()

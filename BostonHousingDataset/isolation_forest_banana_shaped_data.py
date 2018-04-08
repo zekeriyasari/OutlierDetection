@@ -41,6 +41,6 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
 plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
-plt.xlabel("Isolation Forest. contamination=0.261, max_samples=200")
+plt.xlabel("Isolation Forest. contamination={}, max_samples={}".format(contamination, num_samples))
 plt.legend()
 plt.show()
