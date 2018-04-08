@@ -3,16 +3,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_boston
-from sklearn.covariance import EllipticEnvelope
+from sklearn.svm import OneClassSVM
 from scipy import stats
 
 # Get the data
 dataset = load_boston()
-data = dataset["data"][:, [5, 12]]  # Two cluster data
+data = dataset["data"][:, [5, 12]]  # Banana-shaped data
 contamination = 0.261
 
 # Fit the model
-clf = EllipticEnvelope(support_fraction=1., contamination=contamination)
+clf = OneClassSVM(nu=contamination, gamma=0.1)
 clf.fit(data)
 
 # Perform outlier detection
@@ -39,6 +39,7 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.title("Inliers = {} Outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("One Class SVM. kernel='rbf', gamma=0.1, nu=0.25")
 plt.legend()
 plt.show()

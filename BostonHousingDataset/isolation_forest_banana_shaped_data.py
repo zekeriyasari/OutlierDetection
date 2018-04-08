@@ -1,31 +1,31 @@
-# One-Class SVM for real dataset
+# OneClassSVM outlier detection
 
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
-from sklearn.svm import OneClassSVM
+from sklearn.ensemble import IsolationForest
+from sklearn.datasets import load_boston
 from scipy import stats
 
 # Get the data
-dataset = load_iris()
-data = dataset["data"][:, [0, 1]]  # Two cluster data
-contamination = 0.1
+dataset = load_boston()
+data = dataset["data"][:, [5, 12]]  # Two cluster data
+contamination = 0.261
+num_samples = data.shape[0]
 
-
-# Fit the model
-clf = OneClassSVM(nu=contamination, gamma=0.05)
+# Construct the outlier detector
+clf = IsolationForest(contamination=contamination, max_samples=num_samples)
 clf.fit(data)
 
-# Perform outlier detection
+# Perform outlier detection# clf = IsolationForest()
 predicted_data = clf.predict(data)
 inlier_predicted_data = data[predicted_data == 1]
 outlier_predicted_data = data[predicted_data == -1]
 num_inliers_predicted = inlier_predicted_data.shape[0]
 num_outliers_predicted = outlier_predicted_data.shape[0]
 
-# Plot decision function values
+# # Plot decision function values
 xr = np.linspace(3, 10, 500)
-yr = np.linspace(1, 5, 500)
+yr = np.linspace(-5, 45, 500)
 xx, yy = np.meshgrid(xr, yr)
 zz = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
 zz = zz.reshape(xx.shape)
@@ -40,7 +40,7 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("Isolation Forest. contamination=0.261, max_samples=200")
 plt.legend()
 plt.show()
-

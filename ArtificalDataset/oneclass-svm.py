@@ -1,15 +1,29 @@
+# OneClassSVM outlier detection
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import OneClassSVM
 from scipy import stats
-from scipy.io import loadmat
 
-dataset = loadmat("../RealData/glass.mat")
-data = dataset["X"][:, [0, 2]]
-contamination = 0.042
+# Set rng seed
+np.random.seed(42)
+
+# Example settings
+num_samples = 200
+contamination = 0.25
+num_outliers = int(num_samples * contamination)
+num_inliers = num_samples - num_outliers
+
+# Construct the data set
+offset = 1
+data_inliers_1 = 0.3 * np.random.randn(num_inliers // 2, 2) - offset
+data_inliers_2 = 0.3 * np.random.randn(num_inliers // 2, 2) + offset
+data_inliers = np.r_[data_inliers_1, data_inliers_2]
+data_outliers = np.random.uniform(low=-5, high=5, size=(num_outliers, 2))
+data = np.r_[data_inliers, data_outliers]
 
 # Fit the model
-clf = OneClassSVM(nu=contamination, gamma=0.1)
+clf = OneClassSVM(kernel="rbf", gamma=0.1, nu=contamination)
 clf.fit(data)
 
 # Perform outlier detection
@@ -20,8 +34,8 @@ num_inliers_predicted = inlier_predicted_data.shape[0]
 num_outliers_predicted = outlier_predicted_data.shape[0]
 
 # Plot decision function values
-xr = np.linspace(1.45, 1.6, 500)
-yr = np.linspace(-1, 9, 500)
+xr = np.linspace(-6, 6, 600)
+yr = np.linspace(-6, 6, 600)
 xx, yy = np.meshgrid(xr, yr)
 zz = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
 zz = zz.reshape(xx.shape)
@@ -36,8 +50,7 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
             label="Inliers")
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
-plt.title("Number of inliers = {} Number of outliers = {}".format(num_inliers_predicted, num_outliers_predicted))
+plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
+plt.xlabel("One Class SVM. kernel='rbf', gamma=0.1, nu=0.25")
 plt.legend()
 plt.show()
-
-
