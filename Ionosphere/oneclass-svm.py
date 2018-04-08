@@ -1,18 +1,16 @@
-# One-Class SVM for real dataset
-
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.covariance import EllipticEnvelope
-from scipy.io import loadmat
+from sklearn.svm import OneClassSVM
 from scipy import stats
+from scipy.io import loadmat
 
-# Get the data
-dataset = loadmat("../RealData/ionosphere.mat")
+dataset = loadmat("../Ionosphere/ionosphere.mat")
 data = dataset["X"][:, [1, 5]]
 contamination = 0.36
+num_samples = np.shape(data)[0]
 
 # Fit the model
-clf = EllipticEnvelope(support_fraction=1., contamination=contamination)
+clf = OneClassSVM(nu=contamination, gamma=0.1)
 clf.fit(data)
 
 # Perform outlier detection

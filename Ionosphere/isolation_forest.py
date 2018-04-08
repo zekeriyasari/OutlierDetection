@@ -7,7 +7,7 @@ from scipy import stats
 from scipy.io import loadmat
 
 # Get the data
-dataset = loadmat("../RealData/ionosphere.mat")
+dataset = loadmat("../Ionosphere/ionosphere.mat")
 data = dataset["X"][:, [1, 5]]
 contamination = 0.36
 num_samples = np.shape(data)[0]

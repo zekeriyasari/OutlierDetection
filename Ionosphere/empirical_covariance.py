@@ -6,12 +6,13 @@ from sklearn.covariance import EllipticEnvelope
 from scipy.io import loadmat
 from scipy import stats
 
-dataset = loadmat("../RealData/ionosphere.mat")
+# Get the data
+dataset = loadmat("../Ionosphere/ionosphere.mat")
 data = dataset["X"][:, [1, 5]]
 contamination = 0.36
 
 # Fit the model
-clf = EllipticEnvelope(contamination=contamination)
+clf = EllipticEnvelope(support_fraction=1., contamination=contamination)
 clf.fit(data)
 
 # Perform outlier detection
