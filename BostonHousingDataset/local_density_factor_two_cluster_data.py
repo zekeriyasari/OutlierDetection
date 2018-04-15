@@ -40,6 +40,6 @@ plt.scatter(inlier_predicted_data[:, 0], inlier_predicted_data[:, 1], c="white",
 plt.scatter(outlier_predicted_data[:, 0], outlier_predicted_data[:, 1], c="black", s=10, edgecolors="black",
             label="Outliers")
 plt.title("Inliers={} Outliers={}".format(num_inliers_predicted, num_outliers_predicted))
-plt.xlabel("Local Density Factor. n_neighbors={}, contamination={}".format(num_neighbors, contamination))
+plt.xlabel("Local Outlier Factor. n_neighbors={}, contamination={}".format(num_neighbors, contamination))
 plt.legend()
 plt.show()

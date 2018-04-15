@@ -1,4 +1,4 @@
-# OneClassSVM outlier detection
+# Outlier detection with IsolationForest using artificial dataset.
 
 import numpy as np
 import matplotlib.pyplot as plt

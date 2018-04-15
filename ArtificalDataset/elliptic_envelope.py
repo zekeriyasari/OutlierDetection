@@ -1,4 +1,4 @@
-# EllipticEnvelope outlier detection
+# Outlier detection with EllipticEnvelope using artificial dataset.
 
 import numpy as np
 import matplotlib.pyplot as plt

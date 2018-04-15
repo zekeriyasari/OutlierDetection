@@ -1,4 +1,4 @@
-# OneClassSVM outlier detection
+# Outlier detection using OneClassSVM and artificial dataset.
 
 import numpy as np
 import matplotlib.pyplot as plt
