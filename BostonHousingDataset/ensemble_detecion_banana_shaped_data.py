@@ -72,3 +72,60 @@ for name, clf in ensemble.items():
     plt.xlabel("Local Outlier Factor. n_neighbors={}, contamination={}".format(num_neighbors, contamination))
     plt.legend()
     plt.show()
+
+scores = np.vstack([predicted_data for predicted_data in ensemble_predicted_data.values()]).sum(axis=0)
+first_degree_inlier_data = data[scores == 4]
+second_degree_inlier_data = data[scores == 2]
+undetermined_data = data[scores == 0]
+second_degree_outlier_data = data[scores == -2]
+first_degree_outlier_data = data[scores == -4]
+num_inliers_predicted = first_degree_inlier_data.shape[0] + second_degree_inlier_data.shape[0]
+num_outliers_predicted = first_degree_outlier_data.shape[0] + second_degree_outlier_data.shape[0]
+num_undetermined = data.shape[0] - num_inliers_predicted - num_outliers_predicted
+
+# Plot the frontiers
+colors = {"oneclasssvm": "r", "elliptic_envelope": "m", "isolation_forest": "g", "local_outlier_factor": "k"}
+xr = np.linspace(3, 10, 500)
+yr = np.linspace(-5, 45, 500)
+legends = {}
+xx, yy = np.meshgrid(xr, yr)
+for name, clf in ensemble.items():
+    # Plot decision function values
+    xr = np.linspace(3, 10, 500)
+    yr = np.linspace(-5, 45, 500)
+    xx, yy = np.meshgrid(xr, yr)
+    if name.startswith("local_outlier_factor"):
+        zz = clf._decision_function(np.c_[xx.ravel(), yy.ravel()])
+        scores = clf.negative_outlier_factor_
+    else:
+        zz = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
+        scores = clf.decision_function(data)
+    zz = zz.reshape(xx.shape)
+    threshold = stats.scoreatpercentile(scores, 100 * contamination)
+    legends[name] = plt.contour(xx, yy, zz, levels=np.array([threshold]), linewidths=2,
+                                colors=colors[name])  # The frontier
+
+legends["1st Inl"] = plt.scatter(first_degree_inlier_data[:, 0], first_degree_inlier_data[:, 1], s=10,
+                                 edgecolors="black")
+legends["2nd Inl"] = plt.scatter(second_degree_inlier_data[:, 0], second_degree_inlier_data[:, 1], s=10,
+                                 edgecolors="black")
+legends["Und"] = plt.scatter(undetermined_data[:, 0], undetermined_data[:, 1], s=10, edgecolors="black")
+legends["2nd Outl"] = plt.scatter(second_degree_outlier_data[:, 0], second_degree_outlier_data[:, 1],
+                                  s=10, edgecolors="black")
+legends["1st Outl"] = plt.scatter(first_degree_outlier_data[:, 0], first_degree_outlier_data[:, 1], s=10,
+                                  edgecolors="black")
+legend1_values_list = list(legends.values())
+legend1_keys_list = list(legends.keys())
+plt.legend((legend1_values_list[0].collections[0],
+            legend1_values_list[1].collections[0],
+            legend1_values_list[2].collections[0],
+            legend1_values_list[3].collections[0]),
+           (legend1_keys_list[0], legend1_keys_list[1], legend1_keys_list[2], legend1_keys_list[3]))
+plt.title("1st Inl={}, 2nd Inl={}, Und={}, "
+          "2nd Outl={}, 1st Outl={}".format(first_degree_inlier_data.shape[0],
+                                            second_degree_inlier_data.shape[0],
+                                            undetermined_data.shape[0],
+                                            second_degree_outlier_data.shape[0],
+                                            first_degree_outlier_data.shape[0]))
+plt.xlabel("Ensemble outlier detector".format(num_neighbors, contamination))
+plt.show()
